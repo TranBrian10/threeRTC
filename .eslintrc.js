@@ -47,6 +47,13 @@ module.exports = {
                     "error"
                 ]
             }
+        ],
+        "brace-style": [
+            "error",
+            "stroustrup"
+        ],
+        "no-trailing-spaces": [
+            "error"
         ]
     }
 };
