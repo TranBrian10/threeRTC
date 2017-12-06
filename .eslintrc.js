@@ -20,6 +20,14 @@ module.exports = {
         "react"
     ],
     "rules": {
+        "array-bracket-spacing": [
+            "error",
+            "always"
+        ],
+        "brace-style": [
+            "error",
+            "stroustrup"
+        ],
         "indent": [
             "error",
             "tab",
@@ -27,17 +35,12 @@ module.exports = {
                 "SwitchCase": 1
             }
         ],
+        "key-spacing": [
+            "error"
+        ],
         "linebreak-style": [
             "error",
             "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
         ],
         "no-console": [
             "error",
@@ -48,12 +51,20 @@ module.exports = {
                 ]
             }
         ],
-        "brace-style": [
-            "error",
-            "stroustrup"
-        ],
         "no-trailing-spaces": [
             "error"
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
         ]
     }
 };

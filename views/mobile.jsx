@@ -2,18 +2,20 @@ var React = require('react');
 var DefaultLayout = require('./layouts/default');
 import PropTypes from 'prop-types';
 
-class MobileMessage extends React.Component {
+class MobileApp extends React.Component {
 	render() {
 		return (
 			<DefaultLayout title={this.props.title}>
 				<h1>{this.props.title}</h1>
+
 				<div>Mobile browser detected</div>
+				<br/>
 			</DefaultLayout>
 		);
 	}
 }
-MobileMessage.propTypes = {
+MobileApp.propTypes = {
 	title: PropTypes.string.isRequired
 };
 
-module.exports = MobileMessage;
+module.exports = MobileApp;
