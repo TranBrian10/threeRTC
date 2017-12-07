@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page */
 router.get('/', function(req, res) {
-	res.render('desktop', { title: 'threeRTC' });
+	res.render('index', { title: 'threeRTC' });
 });
 
 module.exports = router;

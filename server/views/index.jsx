@@ -2,7 +2,7 @@ var React = require('react');
 var DefaultLayout = require('./layouts/default');
 import PropTypes from 'prop-types';
 
-class DesktopApp extends React.Component {
+class Greeting extends React.Component {
 	render() {
 		return (
 			<DefaultLayout title={this.props.title}>
@@ -13,8 +13,8 @@ class DesktopApp extends React.Component {
 		);
 	}
 }
-DesktopApp.propTypes = {
+Greeting.propTypes = {
 	title: PropTypes.string.isRequired
 };
 
-module.exports = DesktopApp;
+module.exports = Greeting;
