@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ConnectionForm from '../connectionForm/ConnectionForm';
 import logo from '../../assets/logo.svg';
 import './App.css';
 
@@ -19,11 +20,15 @@ class App extends Component {
 	render() {
 		return (
 			<div className="App">
-				<header className="App-header">
+				<header className="App-header App-section">
 					<img src={logo} className="App-logo" alt="logo" />
 					<h1 className="App-title">Welcome to threeRTC</h1>
+					<p className="App-intro">{this.state.userAgent} detected</p>
 				</header>
-				<p className="App-intro">{this.state.userAgent} detected</p>
+
+				<div className="App-section">
+					<ConnectionForm />
+				</div>
 			</div>
 		);
 	}
