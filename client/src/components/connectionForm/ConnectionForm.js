@@ -8,7 +8,7 @@ class ConnectionForm extends Component {
 
 		this.state = {
 			formValue: '',
-			webrtcState: 'Not connected'
+			webrtcState: 'disconnected'
 		};
 		this.webrtc = null;
 
@@ -22,12 +22,15 @@ class ConnectionForm extends Component {
 
 	handleFormSubmit(event) {
 		// TODO: case sensitive, ensure one word, ensure unique, not too long
+		// TODO: set up signaling server, add as constructor parameter
+		// TODO: ensure one display, one controller
 
 		// Set up a webrtc data channel connection
 		const webrtc = new SimpleWebRTC({
 			localVideoEl: '',
 			remoteVideosEl: '',
 			autoRequestMedia: false,
+			enableDataChannels: true,
 			receiveMedia: {
 				offerToReceiveAudio: 0,
 				offerToReceiveVideo: 0
@@ -35,8 +38,14 @@ class ConnectionForm extends Component {
 		});
 		webrtc.joinRoom(this.state.formValue);
 
-		webrtc.on('createdPeer', function (peer) {
+		webrtc.on('createdPeer', (peer) => {
 			console.log('createdPeer', peer);
+
+			if (peer && peer.pc) {
+				peer.pc.on('iceConnectionStateChange', () => {
+					this.setState({ webrtcState: peer.pc.iceConnectionState });
+				});
+			}
 		});
 
 		event.preventDefault();
@@ -50,11 +59,11 @@ class ConnectionForm extends Component {
 						<span>Join a room: </span>
 						<input type="text" placeholder="e.g. myRoom" value={this.state.formValue} onChange={this.handleFormChange} />
 					</label>
-					<input type="submit" value="Join" />
+					<input type="submit" value="Join as display" />
+					<input type="submit" value="Join as controller" />
 				</form>
-				<br/>
 
-				<div>Status: <span>{this.state.webrtcState}</span></div>
+				<pre className="ConnectionForm-statusLog">{this.state.webrtcState}</pre>
 			</div>
 		);
 	}
