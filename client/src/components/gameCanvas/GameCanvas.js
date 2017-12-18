@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Game from '../../game-logic/main';
+import './GameCanvas.css';
 
 class GameCanvas extends Component {
 	constructor(props) {
@@ -8,11 +10,13 @@ class GameCanvas extends Component {
 		this.state = {
 			webrtcObject: props.webrtcObject
 		};
+
+		this.gameObject = new Game(this.state.webrtcObject);
 	}
 
 	render() {
 		return (
-			<div>Game Canvas</div>
+			<div></div>
 		);
 	}
 }
