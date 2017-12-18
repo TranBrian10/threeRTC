@@ -6,7 +6,11 @@ import './App.css';
 class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { hasGyro: false };
+		this.state = {
+			hasGyro: false,
+			webrtcState: 'disconnected',
+			webrtcObject: null
+		};
 	}
 
 	componentDidMount() {
@@ -32,7 +36,7 @@ class App extends Component {
 				</header>
 
 				<div className="App-section">
-					<ConnectionForm />
+					<ConnectionForm hasGyro={this.state.hasGyro} />
 				</div>
 			</div>
 		);

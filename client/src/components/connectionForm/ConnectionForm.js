@@ -1,6 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './ConnectionForm.css';
 import SimpleWebRTC from 'simplewebrtc';
+
+function JoinAsControllerButton(props) {
+	// Can only join as controller if gyro is present
+	if (!props.hasGyro) {
+		return null;
+	}
+
+	return (
+		<input className="ConnectionForm-joinAsController" type="submit" value="Join as controller" />
+	);
+}
+JoinAsControllerButton.propTypes = {
+	hasGyro: PropTypes.bool.isRequired
+};
 
 class ConnectionForm extends Component {
 	constructor(props) {
@@ -59,8 +74,8 @@ class ConnectionForm extends Component {
 						<span>Join a room: </span>
 						<input type="text" placeholder="e.g. myRoom" value={this.state.formValue} onChange={this.handleFormChange} />
 					</label>
-					<input type="submit" value="Join as display" />
-					<input type="submit" value="Join as controller" />
+					<input className="ConnectionForm-joinAsDisplay" type="submit" value="Join as display" />
+					<JoinAsControllerButton hasGyro={this.props.hasGyro}/>
 				</form>
 
 				<pre className="ConnectionForm-statusLog">{this.state.webrtcState}</pre>
@@ -68,5 +83,8 @@ class ConnectionForm extends Component {
 		);
 	}
 }
+ConnectionForm.propTypes = {
+	hasGyro: PropTypes.bool.isRequired
+};
 
 export default ConnectionForm;
