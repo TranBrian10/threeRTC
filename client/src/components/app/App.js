@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ConnectionForm from '../connectionForm/ConnectionForm';
+import GameCanvas from '../gameCanvas/GameCanvas';
+import GameController from '../gameController/GameController';
 import logo from '../../assets/logo.svg';
 import './App.css';
 import SimpleWebRTC from 'simplewebrtc';
@@ -137,6 +139,14 @@ class App extends Component {
 	}
 
 	render() {
+		if (this.state.webrtcConnectionState === EConnectionState.CONNECTED) {
+			if (this.state.webrtcDeviceType === EDeviceType.CANVAS) {
+				return <GameCanvas webrtcObject={this.state.webrtcObject} />;
+			}
+
+			return <GameController webrtcObject={this.state.webrtcObject} />;
+		}
+
 		return (
 			<div className="App">
 				<header className="App-header App-section">
