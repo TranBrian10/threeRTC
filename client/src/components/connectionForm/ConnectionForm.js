@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './ConnectionForm.css';
+import EDeviceType from '../../utilities/EDeviceType';
 
 function JoinAsControllerButton(props) {
 	// Can only join as controller if gyro is present
@@ -9,11 +10,12 @@ function JoinAsControllerButton(props) {
 	}
 
 	return (
-		<input className="ConnectionForm-joinAsController" type="submit" value="Join as controller" />
+		<button className="ConnectionForm-joinAsController" type="submit" onClick={props.updateDeviceType}>Join as controller</button>
 	);
 }
 JoinAsControllerButton.propTypes = {
-	hasGyro: PropTypes.bool.isRequired
+	hasGyro: PropTypes.bool.isRequired,
+	updateDeviceType: PropTypes.func.isRequired
 };
 
 class ConnectionForm extends Component {
@@ -26,8 +28,20 @@ class ConnectionForm extends Component {
 		};
 		this.webrtc = null;
 
+		this.updateDeviceType = this.updateDeviceType.bind(this);
 		this.handleFormChange = this.handleFormChange.bind(this);
 		this.handleFormSubmit = this.handleFormSubmit.bind(this);
+	}
+
+	updateDeviceType(clickEvent) {
+		switch(clickEvent.target.className) {
+			case 'ConnectionForm-joinAsDisplay':
+				this.props.updateDeviceType(EDeviceType.CANVAS);
+				break;
+			case 'ConnectionForm-joinAsController':
+				this.props.updateDeviceType(EDeviceType.CONTROLLER);
+				break;
+		}
 	}
 
 	handleFormChange(event) {
@@ -47,8 +61,8 @@ class ConnectionForm extends Component {
 						<span>Join a room: </span>
 						<input type="text" placeholder="e.g. myRoom" value={this.state.formValue} onChange={this.handleFormChange} />
 					</label>
-					<input className="ConnectionForm-joinAsDisplay" type="submit" value="Join as display" />
-					<JoinAsControllerButton hasGyro={this.props.hasGyro}/>
+					<button className="ConnectionForm-joinAsDisplay" type="submit" onClick={this.updateDeviceType}>Join as display</button>
+					<JoinAsControllerButton hasGyro={this.props.hasGyro} updateDeviceType={this.updateDeviceType} />
 				</form>
 			</div>
 		);
@@ -56,7 +70,8 @@ class ConnectionForm extends Component {
 }
 ConnectionForm.propTypes = {
 	hasGyro: PropTypes.bool.isRequired,
-	createWebrtcConnection: PropTypes.func.isRequired
+	createWebrtcConnection: PropTypes.func.isRequired,
+	updateDeviceType: PropTypes.func.isRequired
 };
 
 export default ConnectionForm;
