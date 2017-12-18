@@ -44,6 +44,10 @@ function ConnectionWrapper(props) {
 			<div>Connected to peer in room &quot;{encodeURI(props.webrtcRoomName)}&quot;.</div>
 		);
 	}
+
+	return (
+		<div>Connection lost.</div>
+	);
 }
 ConnectionWrapper.propTypes = {
 	hasGyro: PropTypes.bool.isRequired,
