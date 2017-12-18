@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import NoSleep from 'nosleep.js';
 
 class GameController extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
+			noSleepObject: null,
+			wakeLockEnabled: false,
 			webrtcObject: props.webrtcObject,
 			absoluteOrientation: false,
 			alphaOrientation: null,
@@ -14,6 +17,7 @@ class GameController extends Component {
 		};
 
 		this.handleOrientation = this.handleOrientation.bind(this);
+		this.toggleWakelock = this.toggleWakelock.bind(this);
 	}
 
 	handleOrientation(event) {
@@ -25,19 +29,41 @@ class GameController extends Component {
 		this.setState({ gammaOrientation: event.gamma });
 	}
 
+	toggleWakelock() {
+		if (this.state.wakeLockEnabled) {
+			this.state.noSleepObject.disable();
+			this.setState({ wakeLockEnabled: false });
+			return;
+		}
+
+		this.state.noSleepObject.enable();
+		this.setState({ wakeLockEnabled: true });
+	}
+
 	componentDidMount() {
+		// Wake lock
+		const noSleep = new NoSleep();
+		this.setState({ noSleepObject: noSleep });
+
 		window.addEventListener('deviceorientation', this.handleOrientation, true);
+	}
+
+	componentWillUnmount() {
+		this.state.noSleepObject.disable();
 	}
 
 	render() {
 		return (
 			<div className="GameController">
-				<div>Game Controller</div>
-				<br/>
+				<h3>Game Controller</h3>
 				<div>Absolute: {(this.state.absoluteOrientation) ? 'true' : 'false'}</div>
 				<div>Alpha: {this.state.alphaOrientation}</div>
 				<div>Beta: {this.state.betaOrientation}</div>
 				<div>Gamma: {this.state.gammaOrientation}</div>
+				<br/>
+				<div>Warning: do not turn off the phone screen</div>
+				<button onClick={this.toggleWakelock}>Toggle wakelock</button>
+				<span>{(this.state.wakeLockEnabled) ? 'Enabled' : 'Disabled'}</span>
 			</div>
 		);
 	}
