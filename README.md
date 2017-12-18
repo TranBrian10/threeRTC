@@ -12,6 +12,8 @@ The page should be available at ```localhost:3000```.
 
 Join the same room using a display device (ex. desktop browser) and a controller device (ex. mobile browser).
 
+For linting, ```npm run lint```.
+
 ## Notes
 This is currently using a development signaling server to facilitate the WebRTC connection. It will require a proper signaling server in the future (signalmaster).
 
