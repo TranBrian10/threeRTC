@@ -23,10 +23,10 @@ class GameController extends Component {
 	handleOrientation(event) {
 		// TODO: send data here
 
-		this.setState({ absoluteOrientation: event.absolute });
-		this.setState({ alphaOrientation: event.alpha });
-		this.setState({ betaOrientation: event.beta });
-		this.setState({ gammaOrientation: event.gamma });
+		this.setState({ absoluteOrientation: event.absolute }); // wrt Earth's coordinate frame
+		this.setState({ alphaOrientation: event.alpha }); // z axis
+		this.setState({ betaOrientation: event.beta }); // x axis
+		this.setState({ gammaOrientation: event.gamma }); // y axis
 	}
 
 	toggleWakelock() {

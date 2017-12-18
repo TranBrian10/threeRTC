@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import ConnectionForm from '../connectionForm/ConnectionForm';
+import ConnectionWrapper from '../connectionWrapper/ConnectionWrapper';
 import GameCanvas from '../gameCanvas/GameCanvas';
 import GameController from '../gameController/GameController';
 import logo from '../../assets/logo.svg';
@@ -8,57 +7,6 @@ import './App.css';
 import SimpleWebRTC from 'simplewebrtc';
 import EConnectionState from '../../utilities/EConnectionState';
 import EDeviceType from '../../utilities/EDeviceType';
-
-function ConnectionWrapper(props) {
-	const state = props.webrtcConnectionState;
-
-	// If we have not started a connection yet, show the connection form
-	if (state === EConnectionState.DISCONNECTED) {
-		return (
-			<ConnectionForm
-				hasGyro={props.hasGyro}
-				createWebrtcConnection={props.createWebrtcConnection}
-				updateDeviceType={props.updateDeviceType}
-			/>
-		);
-	}
-
-	// Otherwise, show connection status messages
-	const deviceType = EDeviceType.properties[props.webrtcDeviceType].displayName;
-
-	if (state === EConnectionState.JOINING_ROOM) {
-		return (
-			<div>Joining room &quot;{encodeURI(props.webrtcRoomName)}&quot; as a {deviceType}...</div>
-		);
-	}
-
-	if (state === EConnectionState.WAITING_FOR_PEER) {
-		// Performs xor to turn 0 to 1 or 1 to 0, which gets the other device properties
-		const otherDevice = EDeviceType.properties[1^props.webrtcDeviceType].displayName;
-
-		return (
-			<div>Waiting for {otherDevice} in room &quot;{encodeURI(props.webrtcRoomName)}&quot;...</div>
-		);
-	}
-
-	if (state === EConnectionState.CONNECTED) {
-		return (
-			<div>Connected to peer in room &quot;{encodeURI(props.webrtcRoomName)}&quot;.</div>
-		);
-	}
-
-	return (
-		<div>Connection lost.</div>
-	);
-}
-ConnectionWrapper.propTypes = {
-	hasGyro: PropTypes.bool.isRequired,
-	createWebrtcConnection: PropTypes.func.isRequired,
-	updateDeviceType: PropTypes.func.isRequired,
-	webrtcConnectionState: PropTypes.number.isRequired,
-	webrtcRoomName: PropTypes.string.isRequired,
-	webrtcDeviceType: PropTypes.number
-};
 
 class App extends Component {
 	constructor(props) {
