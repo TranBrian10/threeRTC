@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './ConnectionForm.css';
-import SimpleWebRTC from 'simplewebrtc';
 
 function JoinAsControllerButton(props) {
 	// Can only join as controller if gyro is present
@@ -36,33 +35,7 @@ class ConnectionForm extends Component {
 	}
 
 	handleFormSubmit(event) {
-		// TODO: case sensitive, ensure one word, ensure unique, not too long
-		// TODO: set up signaling server, add as constructor parameter
-		// TODO: ensure one display, one controller
-
-		// Set up a webrtc data channel connection
-		const webrtc = new SimpleWebRTC({
-			localVideoEl: '',
-			remoteVideosEl: '',
-			autoRequestMedia: false,
-			enableDataChannels: true,
-			receiveMedia: {
-				offerToReceiveAudio: 0,
-				offerToReceiveVideo: 0
-			}
-		});
-		webrtc.joinRoom(this.state.formValue);
-
-		webrtc.on('createdPeer', (peer) => {
-			console.log('createdPeer', peer);
-
-			if (peer && peer.pc) {
-				peer.pc.on('iceConnectionStateChange', () => {
-					this.setState({ webrtcState: peer.pc.iceConnectionState });
-				});
-			}
-		});
-
+		this.props.createWebrtcConnection(this.state.formValue);
 		event.preventDefault();
 	}
 
@@ -77,14 +50,13 @@ class ConnectionForm extends Component {
 					<input className="ConnectionForm-joinAsDisplay" type="submit" value="Join as display" />
 					<JoinAsControllerButton hasGyro={this.props.hasGyro}/>
 				</form>
-
-				<pre className="ConnectionForm-statusLog">{this.state.webrtcState}</pre>
 			</div>
 		);
 	}
 }
 ConnectionForm.propTypes = {
-	hasGyro: PropTypes.bool.isRequired
+	hasGyro: PropTypes.bool.isRequired,
+	createWebrtcConnection: PropTypes.func.isRequired
 };
 
 export default ConnectionForm;

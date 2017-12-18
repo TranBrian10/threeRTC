@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ConnectionForm from '../connectionForm/ConnectionForm';
 import logo from '../../assets/logo.svg';
 import './App.css';
+import SimpleWebRTC from 'simplewebrtc';
 
 class App extends Component {
 	constructor(props) {
@@ -11,6 +12,8 @@ class App extends Component {
 			webrtcState: 'disconnected',
 			webrtcObject: null
 		};
+
+		this.createWebrtcConnection = this.createWebrtcConnection.bind(this);
 	}
 
 	componentDidMount() {
@@ -26,6 +29,37 @@ class App extends Component {
 		window.addEventListener('devicemotion', checkHandler);
 	}
 
+	createWebrtcConnection(roomName) {
+		// TODO: case sensitive, ensure one word, ensure unique, not too long
+		// TODO: set up signaling server, add as constructor parameter
+		// TODO: ensure one display, one controller
+
+		// Set up a webrtc data channel connection
+		const webrtc = new SimpleWebRTC({
+			localVideoEl: '',
+			remoteVideosEl: '',
+			autoRequestMedia: false,
+			enableDataChannels: true,
+			receiveMedia: {
+				offerToReceiveAudio: 0,
+				offerToReceiveVideo: 0
+			}
+		});
+		this.setState({ webrtcObject: webrtc });
+
+		webrtc.joinRoom(roomName);
+
+		webrtc.on('createdPeer', (peer) => {
+			console.log('createdPeer', peer);
+
+			if (peer && peer.pc) {
+				peer.pc.on('iceConnectionStateChange', () => {
+					this.setState({ webrtcState: peer.pc.iceConnectionState });
+				});
+			}
+		});
+	}
+
 	render() {
 		return (
 			<div className="App">
@@ -36,7 +70,8 @@ class App extends Component {
 				</header>
 
 				<div className="App-section">
-					<ConnectionForm hasGyro={this.state.hasGyro} />
+					<ConnectionForm hasGyro={this.state.hasGyro} createWebrtcConnection={this.createWebrtcConnection} />
+					<pre className="App-webrtcStatus">{this.state.webrtcState}</pre>
 				</div>
 			</div>
 		);

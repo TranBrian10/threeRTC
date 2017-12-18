@@ -1,5 +1,4 @@
 .App {
-	text-align: center;
 	box-sizing: border-box;
 }
 
@@ -13,6 +12,7 @@
 }
 
 .App-header {
+	text-align: center;
 	background-color: #222;
 	padding-bottom: 10px;
 	color: white;
@@ -24,6 +24,12 @@
 
 .App-intro {
 	font-size: large;
+}
+
+.App-webrtcStatus {
+	background-color: #e2e2e2;
+	padding: 5px;
+	overflow: auto;
 }
 
 @keyframes App-logo-spin {
