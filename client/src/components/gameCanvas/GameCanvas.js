@@ -7,12 +7,12 @@ class GameCanvas extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			webrtcObject: props.webrtcObject
-		};
-
 		this.gameObject = Game.getInstance();
-		this.gameObject.setWebrtc(this.state.webrtcObject);
+		this.gameObject.setWebrtc(props.webrtcObject);
+
+		if (props.webrtcPeerState === 'closed') {
+			// TODO: call game logic to handle peer connection lost
+		}
 	}
 
 	render() {
@@ -22,7 +22,8 @@ class GameCanvas extends Component {
 	}
 }
 GameCanvas.propTypes = {
-	webrtcObject: PropTypes.object.isRequired
+	webrtcObject: PropTypes.object.isRequired,
+	webrtcPeerState: PropTypes.string
 };
 
 export default GameCanvas;

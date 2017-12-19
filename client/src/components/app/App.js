@@ -89,7 +89,7 @@ class App extends Component {
 	render() {
 		if (this.state.webrtcConnectionState === EConnectionState.CONNECTED) {
 			if (this.state.webrtcDeviceType === EDeviceType.CANVAS) {
-				return <GameCanvas webrtcObject={this.state.webrtcObject} />;
+				return <GameCanvas webrtcObject={this.state.webrtcObject} webrtcPeerState={this.state.webrtcPeerState} />;
 			}
 
 			return <GameController webrtcObject={this.state.webrtcObject} />;
