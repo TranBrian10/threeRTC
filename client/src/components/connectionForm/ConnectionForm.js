@@ -41,6 +41,8 @@ class ConnectionForm extends Component {
 			case 'ConnectionForm-joinAsController':
 				this.props.updateDeviceType(EDeviceType.CONTROLLER);
 				break;
+			default:
+				break;
 		}
 	}
 

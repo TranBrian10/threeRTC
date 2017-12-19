@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
-var webrtc;
-var camera, scene, renderer;
-var geometry, material, mesh;
+let webrtc;
+let gameInstance = null;
+let camera, scene, renderer;
+let geometry, material, mesh;
 
 function init() {
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
@@ -22,20 +23,31 @@ function init() {
 }
 
 function animate() {
-	requestAnimationFrame( animate );
+	requestAnimationFrame(animate);
 
 	mesh.rotation.x += 0.01;
 	mesh.rotation.y += 0.02;
 
-	renderer.render( scene, camera );
+	renderer.render(scene, camera);
 }
 
 class Game {
-	constructor(webrtcObject) {
-		webrtc = webrtcObject;
-
+	constructor() {
 		init();
 		animate();
+	}
+
+	setWebrtc(webrtcObject) {
+		webrtc = webrtcObject;
+	}
+
+	static getInstance() {
+		if (gameInstance === null) {
+			gameInstance = new Game();
+			return gameInstance;
+		}
+
+		return gameInstance;
 	}
 }
 

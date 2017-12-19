@@ -5,10 +5,6 @@ import EConnectionState from '../../utilities/EConnectionState';
 import EDeviceType from '../../utilities/EDeviceType';
 
 class ConnectionWrapper extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		const state = this.props.webrtcConnectionState;
 

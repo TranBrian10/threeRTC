@@ -11,7 +11,8 @@ class GameCanvas extends Component {
 			webrtcObject: props.webrtcObject
 		};
 
-		this.gameObject = new Game(this.state.webrtcObject);
+		this.gameObject = Game.getInstance();
+		this.gameObject.setWebrtc(this.state.webrtcObject);
 	}
 
 	render() {
