@@ -33,12 +33,40 @@ function animate() {
 
 class Game {
 	constructor() {
+		this.orientationDataHandlers = [];
+
 		init();
 		animate();
 	}
 
 	setWebrtc(webrtcObject) {
-		webrtc = webrtcObject;
+		if (webrtc !== webrtcObject) {
+			webrtc = webrtcObject;
+
+			const controller = webrtc.getPeers()[0];
+			if (!controller.enableDataChannels) {
+				console.warn('Controller peer does not have data channels enabled');
+				return;
+			}
+
+			const dc = controller.getDataChannel('orientationData');
+			if (dc.readyState !== 'open') {
+				console.warn('Data channel \'orientationData\' is not open');
+				return;
+			}
+
+			controller.on('channelMessage', (peer, channelName, messageData) => {
+				if (messageData.type === 'controllerOrientation') {
+					this.orientationDataHandlers.forEach((handlerFunction) => {
+						handlerFunction(messageData.payload);
+					});
+				}
+			});
+		}
+	}
+
+	addOrientationDataHandler(handlerFunction) {
+		this.orientationDataHandlers.push(handlerFunction);
 	}
 
 	static getInstance() {

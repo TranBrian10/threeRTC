@@ -2,6 +2,20 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NoSleep from 'nosleep.js';
 
+let webrtc, dataChannel;
+
+function setupDataChannel(webrtcObject) {
+	webrtc = webrtcObject;
+
+	const display = webrtc.getPeers()[0];
+	if (!display.enableDataChannels) {
+		console.warn('Display peer does not have data channels enabled');
+		return;
+	}
+
+	dataChannel = display.getDataChannel('orientationData');
+}
+
 class GameController extends Component {
 	constructor(props) {
 		super(props);
@@ -9,19 +23,28 @@ class GameController extends Component {
 		this.state = {
 			noSleepObject: null,
 			wakeLockEnabled: false,
-			webrtcObject: props.webrtcObject,
 			absoluteOrientation: false,
 			alphaOrientation: null,
 			betaOrientation: null,
-			gammaOrientation: null
+			gammaOrientation: null,
+			dataChannel: null
 		};
+
+		if (webrtc !== props.webrtcObject) {
+			setupDataChannel(props.webrtcObject);
+		}
 
 		this.handleOrientation = this.handleOrientation.bind(this);
 		this.toggleWakelock = this.toggleWakelock.bind(this);
 	}
 
 	handleOrientation(event) {
-		// TODO: send data here
+		webrtc.sendDirectlyToAll('orientationData', 'controllerOrientation', {
+			absolute: event.absolute,
+			alpha: event.alpha,
+			beta: event.beta,
+			gamma: event.gamma
+		});
 
 		this.setState({ absoluteOrientation: event.absolute }); // wrt Earth's coordinate frame
 		this.setState({ alphaOrientation: event.alpha }); // z axis
