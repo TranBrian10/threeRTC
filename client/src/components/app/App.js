@@ -70,8 +70,6 @@ class App extends Component {
 
 		// Peer connection process started
 		webrtc.on('createdPeer', (peer) => {
-			console.log('createdPeer', peer);
-
 			if (peer && peer.pc) {
 				// Peer connection state change
 				peer.pc.on('iceConnectionStateChange', () => {

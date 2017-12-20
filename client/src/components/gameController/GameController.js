@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NoSleep from 'nosleep.js';
 
-let webrtc, dataChannel;
+let webrtc;
 
 function setupDataChannel(webrtcObject) {
 	webrtc = webrtcObject;
@@ -13,7 +13,7 @@ function setupDataChannel(webrtcObject) {
 		return;
 	}
 
-	dataChannel = display.getDataChannel('orientationData');
+	display.getDataChannel('orientationData');
 }
 
 class GameController extends Component {
