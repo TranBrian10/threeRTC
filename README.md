@@ -14,6 +14,9 @@ Join the same room using a display device (ex. desktop browser) and a controller
 
 For linting, ```npm run lint```.
 
+## Development
+To render a game object immediately on page load, add the key ```test-canvas``` to the query string. For example, ```http://localhost:3000/?test-canvas```.
+
 ## Notes
 This is currently using a development signaling server to facilitate the WebRTC connection. It will require a proper signaling server in the future (signalmaster).
 
