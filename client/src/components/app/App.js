@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ConnectionWrapper from '../connectionWrapper/ConnectionWrapper';
 import GameCanvas from '../gameCanvas/GameCanvas';
 import GameController from '../gameController/GameController';
+import TestCanvas from '../testCanvas/TestCanvas';
 import logo from '../../assets/logo.svg';
 import './App.css';
 import SimpleWebRTC from 'simplewebrtc';
@@ -17,7 +18,8 @@ class App extends Component {
 			webrtcConnectionState: EConnectionState.DISCONNECTED,
 			webrtcObject: null,
 			webrtcRoomName: '',
-			webrtcDeviceType: null
+			webrtcDeviceType: null,
+			testingCanvas: false
 		};
 
 		this.updateDeviceType = this.updateDeviceType.bind(this);
@@ -25,6 +27,14 @@ class App extends Component {
 	}
 
 	componentDidMount() {
+		// Check for test states
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has('test-canvas')) {
+			this.setState({
+				testingCanvas: true
+			});
+		}
+
 		// Check for gyroscope
 		const checkHandler = (event) => {
 			window.removeEventListener('devicemotion', checkHandler);
@@ -85,6 +95,10 @@ class App extends Component {
 	}
 
 	render() {
+		if (this.state.testingCanvas) {
+			return <TestCanvas />;
+		}
+
 		if (this.state.webrtcConnectionState === EConnectionState.CONNECTED) {
 			if (this.state.webrtcDeviceType === EDeviceType.CANVAS) {
 				return <GameCanvas webrtcObject={this.state.webrtcObject} webrtcPeerState={this.state.webrtcPeerState} />;

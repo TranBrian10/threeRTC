@@ -5,15 +5,7 @@ canvas {
 	z-index: -1;
 }
 
-.GameCanvas-webrtcPeerState {
-	position: fixed;
-	left: 0;
-	bottom: 0;
-	color: #c7c7c7;
-	background-color: #461b1b;
-}
-
-.GameCanvas-orientationData {
+.TestCanvas-orientationData {
 	position: fixed;
 	right: 0;
 	bottom: 0;

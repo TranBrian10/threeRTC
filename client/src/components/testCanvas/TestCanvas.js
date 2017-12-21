@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Game from '../../game-logic/main';
-import './GameCanvas.css';
+import './TestCanvas.css';
 
-class GameCanvas extends Component {
+class TestCanvas extends Component {
 	constructor(props) {
 		super(props);
 
@@ -16,17 +15,10 @@ class GameCanvas extends Component {
 		this.orientationDataHandler = this.orientationDataHandler.bind(this);
 
 		this.gameObject = Game.getInstance();
-		this.gameObject.setWebrtc(props.webrtcObject);
 		this.gameObject.addOrientationDataHandler(this.orientationDataHandler);
-
-		if (props.webrtcPeerState === 'closed') {
-			// TODO: call game logic to handle peer connection lost
-		}
 	}
 
 	orientationDataHandler(data) {
-		// TODO: add latency and points per second stats
-
 		this.setState({
 			alphaOrientation: data.alpha.toFixed(4),
 			betaOrientation: data.beta.toFixed(4),
@@ -36,9 +28,8 @@ class GameCanvas extends Component {
 
 	render() {
 		return (
-			<div className="GameCanvas">
-				<pre className="GameCanvas-webrtcPeerState">Peer state: {this.props.webrtcPeerState}</pre>
-				<pre className="GameCanvas-orientationData">
+			<div className="TestCanvas">
+				<pre className="TestCanvas-orientationData">
 					Z: {this.state.alphaOrientation}<br/>
 					X: {this.state.betaOrientation}<br/>
 					Y: {this.state.gammaOrientation}
@@ -47,9 +38,5 @@ class GameCanvas extends Component {
 		);
 	}
 }
-GameCanvas.propTypes = {
-	webrtcObject: PropTypes.object.isRequired,
-	webrtcPeerState: PropTypes.string
-};
 
-export default GameCanvas;
+export default TestCanvas;
