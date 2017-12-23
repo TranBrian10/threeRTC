@@ -22,7 +22,7 @@ class GameController extends Component {
 
 		this.state = {
 			noSleepObject: null,
-			wakeLockEnabled: false,
+			wakeLockEnabled: true,
 			absoluteOrientation: false,
 			alphaOrientation: null,
 			betaOrientation: null,

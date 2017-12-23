@@ -26,10 +26,11 @@ class GameCanvas extends Component {
 
 	orientationDataHandler(data) {
 		// TODO: add latency and points per second stats
+		// TODO: check if undefined values
 
 		this.setState({
 			alphaOrientation: data.alpha.toFixed(4),
-			betaOrientation: data.beta.toFixed(4),
+			betaOrientation: data.beta.toFixed(4) + 180, // map (-180, 180) to (0, 360)
 			gammaOrientation: data.gamma.toFixed(4)
 		});
 	}
