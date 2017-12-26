@@ -4,6 +4,8 @@
 This project uses three.js and simplewebrtc to make a 3D game using real-time data from a mobile browser.
 
 ## Set Up
+Clone the repo and ensure you have node.js installed.
+
 Navigate to the ```client``` subdirectory.
 
 Run ```npm install``` followed by ```npm run start```.
