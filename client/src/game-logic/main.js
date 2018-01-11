@@ -32,7 +32,7 @@ function init() {
 function createHandRotationHandler(pivot) {
 	return function(orientationData) {
 		const degToRadRatio = Math.PI / 180;
-		pivot.rotation.set((orientationData.beta + 180) * degToRadRatio, orientationData.gamma * degToRadRatio, orientationData.alpha * degToRadRatio);
+		pivot.rotation.set(orientationData.beta * degToRadRatio, orientationData.gamma * degToRadRatio, orientationData.alpha * degToRadRatio);
 	};
 }
 
@@ -57,6 +57,8 @@ function animate() {
 class Game {
 	constructor() {
 		this.orientationDataHandlers = [];
+		this.alphaOffset = 0;
+		this.betaOffset = 0;
 
 		init.call(this);
 		animate.call(this);
@@ -80,16 +82,41 @@ class Game {
 
 			controller.on('channelMessage', (peer, channelName, messageData) => {
 				if (messageData.type === 'controllerOrientation') {
-					this.orientationDataHandlers.forEach((handlerFunction) => {
-						handlerFunction(messageData.payload);
-					});
+					this.callOrientationDataHandlers(messageData.payload);
+				}
+				else if (messageData.type === 'controllerCalibrate') {
+					this.calibrate(messageData.payload);
+					this.callOrientationDataHandlers(messageData.payload);
 				}
 			});
 		}
 	}
 
+	normalizeOrientationData(orientationData) {
+		orientationData.beta += 180; // map (-180, 180) to (0, 360)
+
+		// Shift values based on calibration values
+		orientationData.beta = (orientationData.beta - this.betaOffset + 360) % 360;
+		orientationData.alpha = (orientationData.alpha - this.alphaOffset + 360) % 360;
+	}
+
 	addOrientationDataHandler(handlerFunction) {
 		this.orientationDataHandlers.push(handlerFunction);
+	}
+
+	callOrientationDataHandlers(orientationData) {
+		this.normalizeOrientationData(orientationData);
+
+		this.orientationDataHandlers.forEach((handlerFunction) => {
+			handlerFunction(orientationData);
+		});
+	}
+
+	calibrate(orientationData) {
+		const mappedBeta = orientationData.beta + 180; // map (-180, 180) to (0, 360)
+
+		this.alphaOffset = orientationData.alpha;
+		this.betaOffset = 90 - mappedBeta;
 	}
 
 	static getInstance() {

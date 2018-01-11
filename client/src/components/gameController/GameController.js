@@ -36,6 +36,7 @@ class GameController extends Component {
 
 		this.handleOrientation = this.handleOrientation.bind(this);
 		this.toggleWakelock = this.toggleWakelock.bind(this);
+		this.startCalibration = this.startCalibration.bind(this);
 	}
 
 	handleOrientation(event) {
@@ -63,6 +64,15 @@ class GameController extends Component {
 		this.setState({ wakeLockEnabled: true });
 	}
 
+	startCalibration() {
+		webrtc.sendDirectlyToAll('orientationData', 'controllerCalibrate', {
+			absolute: this.state.absoluteOrientation,
+			alpha: this.state.alphaOrientation,
+			beta: this.state.betaOrientation,
+			gamma: this.state.gammaOrientation
+		});
+	}
+
 	componentDidMount() {
 		// Wake lock
 		const noSleep = new NoSleep();
@@ -87,6 +97,9 @@ class GameController extends Component {
 				<div>Warning: do not turn off the phone screen</div>
 				<button onClick={this.toggleWakelock}>Toggle wakelock</button>
 				<span>{(this.state.wakeLockEnabled) ? 'Enabled' : 'Disabled'}</span>
+				<br/>
+				<br/>
+				<button onClick={this.startCalibration}>Calibrate</button>
 			</div>
 		);
 	}

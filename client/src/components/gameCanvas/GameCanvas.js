@@ -30,7 +30,7 @@ class GameCanvas extends Component {
 
 		this.setState({
 			alphaOrientation: data.alpha.toFixed(4),
-			betaOrientation: data.beta.toFixed(4) + 180, // map (-180, 180) to (0, 360)
+			betaOrientation: data.beta.toFixed(4),
 			gammaOrientation: data.gamma.toFixed(4)
 		});
 	}
