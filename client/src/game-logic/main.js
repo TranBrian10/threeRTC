@@ -1,11 +1,14 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 
+let TIMESTEP = 1/60;
+
 let webrtc;
 let gameInstance = null;
 let camera, scene, renderer;
 let world;
-let timeStep = 1/60;
+
+//let threeToCannonMap = {};
 
 function initCannon() {
 	world = new CANNON.World();
@@ -13,12 +16,18 @@ function initCannon() {
 	world.broadphase = new CANNON.NaiveBroadphase();
 	world.solver.iterations = 10;
 
-	var sphere1 = initSphereCannon(world, 2, new CANNON.Vec3(0, 0, 100), 2000);
-	sphere1.angularVelocity.set(0, 1, 0);
+	var sphere1 = initSphereCannon(world, 2, new CANNON.Vec3(0, 0, 100), 20);
+	//sphere1.angularVelocity.set(0, 1, 0);
+	sphere1.quaternion.setFromEuler(0, 180, 0, 'XYZ');
 
-	var sphere2 = initSphereCannon(world, 2, new CANNON.Vec3(0, 0, 0), 1);
+	var sphere2 = initSphereCannon(world, 2, new CANNON.Vec3(0, 0, -100), 1);
 	sphere2.angularVelocity.set(0, -1, 0);
 	sphere2.applyImpulse(new CANNON.Vec3(0, 0, 60), new CANNON.Vec3(0, 0, 0));
+
+	var cylinderBody = initCylinderCannon(world, 2, 55, new CANNON.Vec3(0, -30, 100 - 45));
+
+	const handRotationHandler = createHandRotationHandler(cylinderBody);
+	this.addOrientationDataHandler(handRotationHandler);
 }
 
 function initSphereCannon(world, radius, pos, mass) {
@@ -33,7 +42,19 @@ function initSphereCannon(world, radius, pos, mass) {
 	return sphereBody;
 }
 
-function init() {
+function initCylinderCannon(world, radius, height, pos) {
+	var cylinderBody = new CANNON.Body({
+		mass: 0, // kg
+		position: pos
+	});
+	cylinderBody.addShape(new CANNON.Cylinder(radius, radius, height, 30), new CANNON.Vec3(0, height/2, 0));
+
+	world.addBody(cylinderBody);
+
+	return cylinderBody;
+}
+
+function initThree() {
 	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
 	camera.translateZ(100);
 	camera.updateMatrixWorld(true);
@@ -60,8 +81,8 @@ function init() {
 
 	initSphere(spherePivot, 2, 'sphere2');
 
-	const handRotationHandler = createHandRotationHandler(handPivot);
-	this.addOrientationDataHandler(handRotationHandler);
+	//const handRotationHandler = createHandRotationHandler(handPivot);
+	//this.addOrientationDataHandler(handRotationHandler);
 
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -71,7 +92,8 @@ function init() {
 function createHandRotationHandler(pivot) {
 	return function(orientationData) {
 		const degToRadRatio = Math.PI / 180;
-		pivot.rotation.set(orientationData.beta * degToRadRatio, orientationData.gamma * degToRadRatio, orientationData.alpha * degToRadRatio);
+		//pivot.rotation.set(orientationData.beta * degToRadRatio, orientationData.gamma * degToRadRatio, orientationData.alpha * degToRadRatio);
+		pivot.quaternion.setFromEuler(orientationData.beta * degToRadRatio, orientationData.gamma * degToRadRatio, orientationData.alpha * degToRadRatio, 'XYZ');
 	};
 }
 
@@ -102,21 +124,25 @@ function animate() {
 	renderer.render(scene, camera);
 }
 
+let i = 0;
 function updatePhysics() {
-
 	// Step the physics world
-	world.step(timeStep);
+	world.step(TIMESTEP);
 
 	// Copy coordinates from Cannon.js to Three.js
 	var bodies = world.bodies;
 
 	var sphereMesh1 = scene.getObjectByName('spherePivot').getObjectByName('sphere1');
 	sphereMesh1.position.copy(bodies[0].position);
-	sphereMesh1.quaternion.copy(bodies[0].quaternion);
+	sphereMesh1.quaternion.copy(bodies[0].quaternion.setFromEuler(0, i++, 0, 'XYZ'));
 
 	var sphereMesh2 = scene.getObjectByName('spherePivot').getObjectByName('sphere2');
 	sphereMesh2.position.copy(bodies[1].position);
 	sphereMesh2.quaternion.copy(bodies[1].quaternion);
+
+	var cylinderBody = scene.getObjectByName('handPivot');
+	cylinderBody.position.copy(bodies[2].position);
+	cylinderBody.quaternion.copy(bodies[2].quaternion);
 }
 
 class Game {
@@ -125,7 +151,7 @@ class Game {
 		this.alphaOffset = 0;
 		this.betaOffset = 0;
 
-		init.call(this);
+		initThree.call(this);
 		initCannon.call(this);
 		animate.call(this);
 	}
